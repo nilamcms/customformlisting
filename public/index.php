@@ -5,7 +5,7 @@
  * A class definition that includes attributes and functions used across both the
  * public-facing side of the site and the admin area.
  *
- * @link       https://github.com/nilamcms/Custom-Form-Listing.git
+ * @link       https://github.com/nilamcms/customformlisting.git
  * @since      1.0.0
  *
  * @package    Custom_Form_Listing
