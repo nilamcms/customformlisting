@@ -14,7 +14,7 @@
  * @wordpress-plugin
  * Plugin Name:       Custom Form Listing
  * Plugin URI:        https://github.com/nilamcms/customformlisting.git
- * Description:       This is a short description of what the plugin does. It's displayed in the WordPress admin area.
+ * Description:       This plugin purpose is that it will provide a custom form and it is generate automatically create a page and its integrate with a shortcode in page  after you can check that page in frontend. When you form submit the value store in database and you can also see entry backend.
  * Version:           1.0.0
  * Author:            Nilam Nainvani
  * Author URI:        https://github.com/nilamcms/customformlisting.git
