@@ -54,53 +54,36 @@ class Custom_Form_Listing_Public {
 	}
 
 	/**
-	 * Register the stylesheets for the public-facing side of the site.
-	 *
-	 * @since    1.0.0
-	 */
-	public function enqueue_styles() {
-
-		/**
-		 * This function is provided for demonstration purposes only.
-		 *
-		 * An instance of this class should be passed to the run() function
-		 * defined in Custom_Form_Listing_Loader as all of the hooks are defined
-		 * in that particular class.
-		 *
-		 * The Custom_Form_Listing_Loader will then create the relationship
-		 * between the defined hooks and the functions defined in this
-		 * class.
-		 */
-
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/custom-form-listing-public.css', array(), $this->version, 'all' );
-
-	}
-
-	/**
 	 * Register the JavaScript for the public-facing side of the site.
 	 *
 	 * @since    1.0.0
 	 */
-	public function enqueue_scripts() {
+	public function cfl_wp_enqueue_scripts_callback() {
+		// Custom style.
+		wp_enqueue_style(
+			$this->plugin_name,
+			plugin_dir_url( __FILE__ ) . 'css/custom-form-listing-public.css',
+			array(),
+			filemtime( plugin_dir_path( __FILE__ ) . 'css/custom-form-listing-public.css' )
+		);
 
-		/**
-		 * This function is provided for demonstration purposes only.
-		 *
-		 * An instance of this class should be passed to the run() function
-		 * defined in Custom_Form_Listing_Loader as all of the hooks are defined
-		 * in that particular class.
-		 *
-		 * The Custom_Form_Listing_Loader will then create the relationship
-		 * between the defined hooks and the functions defined in this
-		 * class.
-		 */
+		// Custom script.
+		wp_enqueue_script(
+			$this->plugin_name,
+			plugin_dir_url( __FILE__ ) . 'js/custom-form-listing-public.js',
+			array( 'jquery' ),
+			filemtime( plugin_dir_path( __FILE__ ) . 'js/custom-form-listing-public.js' ),
+			true
+		);
 
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/custom-form-listing-public.css', array(), $this->version, 'all' );
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/custom-form-listing-public.js', array( 'jquery' ), $this->version, false );
-		wp_register_script( 'call-ajax-script', plugin_dir_url( __FILE__ ) . 'js/custom-form-listing-public.js', array( 'jquery' ) );
-		wp_localize_script( 'call-ajax-script', 'adminajax', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) );
-		wp_enqueue_script( 'call-ajax-script' );
-
+		// Localize script.
+		wp_localize_script(
+			$this->plugin_name,
+			'CFL_Public_JS_Vars',
+			array(
+				'ajaxurl' => admin_url( 'admin-ajax.php' ),
+			)
+		);
 	}
 	public function create_custom_form() {
 
@@ -120,7 +103,7 @@ class Custom_Form_Listing_Public {
 
 		} else {
 
-			$wpdb->query( "INSERT INTO {$wpdb->prefix}formdata set full_name ='" . $full_name . "', email ='" . $email . "',phone_number ='" . $phone . "' " );
+			// $wpdb->query( "INSERT INTO {$wpdb->prefix}formdata set full_name ='" . $full_name . "', email ='" . $email . "',phone_number ='" . $phone . "' " );
 
 			$response = true;
 		}
@@ -130,25 +113,28 @@ class Custom_Form_Listing_Public {
 
 	}
 
-	public function create_shortcode( $attr = array(), $content = null ) {  ?>
-			
-	<div class="alert alert-success alert-dismissible" id="success" style="display:none;"></div>
-	<div class="alert alert-danger alert-dismissible" id="error" style="display:none;"></div>
-	<form id="register_form" name="form1" method="post">
-	<div class="form-group">
-		<label for="email">Full Name</label>
-		<input type="text" class="form-control" id="full_name" placeholder="FullName" name="full_name">
-	</div>
-	<div class="form-group">
-		<label for="pwd">Email</label>
-		<input type="email" class="form-control" id="email" placeholder="Email" name="email">
-	</div>
-	<div class="form-group">
-		<label for="pwd">Phone</label>
-		<input type="text" class="form-control" id="phone" placeholder="Phone" name="phone">
-	</div>
-	<input type="button" name="save" class="btn btn-primary" value="Submit" id="butsave">
-   </form>
+	public function create_shortcode() {
+		ob_start();
+		?>
+		<div class="alert alert-success alert-dismissible" id="success" style="display:none;"></div>
+		<div class="alert alert-danger alert-dismissible" id="error" style="display:none;"></div>
+		<form id="register_form" name="form1" method="post">
+			<div class="form-group">
+				<label for="full_name"><?php esc_html_e( 'Full Name', 'custom-form-listing' ); ?></label>
+				<input type="text" class="form-control" id="full_name" placeholder="<?php esc_html_e( 'John Doe', 'custom-form-listing' ); ?>" name="full_name">
+			</div>
+			<div class="form-group">
+				<label for="email"><?php esc_html_e( 'Email', 'custom-form-listing' ); ?></label>
+				<input type="email" class="form-control" id="email" placeholder="john.doe@example.com" name="email">
+			</div>
+			<div class="form-group">
+				<label for="phone"><?php esc_html_e( 'Phone', 'custom-form-listing' ); ?></label>
+				<input type="text" class="form-control" id="phone" placeholder="+X XXX XXX XXXX" name="phone" onkeypress="return /[0-9]/i.test(event.key)">
+			</div>
+			<input type="button" name="save" class="btn btn-primary" value="<?php esc_html_e( 'Submit', 'custom-form-listing' ); ?>" id="butsave">
+		</form>
 		<?php
+
+		return ob_get_clean();
 	}
 }
