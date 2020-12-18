@@ -7,12 +7,17 @@
  * @package    Custom_Form_Listing
  * @subpackage Custom_Form_Listing/public/js
  */
-
 jQuery( document ).ready( function( $ ) {
 	'use strict';
 
 	// Localized variables.
-	var ajaxurl = CFL_Public_JS_Vars.ajaxurl;
+	var ajaxurl                  = CFL_Public_JS_Variables.ajaxurl;
+	var validation_error_message = CFL_Public_JS_Variables.validation_error_message;
+
+	// var {
+	// 	ajaxurl,
+	// 	validation_error_message
+	// } = CFL_Public_JS_Variables;
 	
 	/**
 	 * Submit the form.
@@ -27,7 +32,7 @@ jQuery( document ).ready( function( $ ) {
 
 		// Check if the full name and email are valid strings.
 		if ( -1 === is_valid_string( full_name ) || -1 === is_valid_string( email ) ) {
-			$( '#error' ).html( 'Please fill all the field!' ).show();
+			$( '#error' ).html( validation_error_message ).show();
 			return false;
 		}
 
@@ -41,25 +46,23 @@ jQuery( document ).ready( function( $ ) {
 		this_button.attr( 'disabled', 'disabled' );
 
 		// Process the ajax now.
+		var data = {
+			action: "create_custom_form",
+			full_name: full_name,
+			email: email,
+			phone: phone
+		};
+
 		$.ajax( {
 			url: ajaxurl,
 			type: "POST",
 			dataType   : 'json',
-			data: {
-				action: "create_custom_form",
-				full_name: full_name,
-				email: email,
-				phone: phone
-			},
-			success: function(response){
-				if (response == true) {
-
-					$( "#success" ).show();
-					$( '#success' ).html( 'Registration successful !' );
-				} else if (response == false) {
-
-					$( "#error" ).show();
-					$( '#error' ).html( 'Email ID already exists !' );
+			data: data,
+			success: function( response ){
+				if ( response == true ) {
+					$( '#success' ).html( 'Registration successful !' ).show();
+				} else if ( response == false ) {
+					$( '#error' ).html( 'Email ID already exists !' ).show();
 				}
 			}
 		} );

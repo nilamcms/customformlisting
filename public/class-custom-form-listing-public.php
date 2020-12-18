@@ -79,9 +79,10 @@ class Custom_Form_Listing_Public {
 		// Localize script.
 		wp_localize_script(
 			$this->plugin_name,
-			'CFL_Public_JS_Vars',
+			'CFL_Public_JS_Variables',
 			array(
-				'ajaxurl' => admin_url( 'admin-ajax.php' ),
+				'ajaxurl'                  => admin_url( 'admin-ajax.php' ),
+				'validation_error_message' => __( 'Please fill all the field!', 'custom-form-listing' ),
 			)
 		);
 	}
@@ -98,13 +99,9 @@ class Custom_Form_Listing_Public {
 		$resultsr = $wpdb->get_results( $sql, OBJECT );
 
 		if ( count( $resultsr ) > 0 ) {
-
 			$response = false;
-
 		} else {
-
-			// $wpdb->query( "INSERT INTO {$wpdb->prefix}formdata set full_name ='" . $full_name . "', email ='" . $email . "',phone_number ='" . $phone . "' " );
-
+			$wpdb->query( "INSERT INTO {$wpdb->prefix}formdata set full_name ='" . $full_name . "', email ='" . $email . "',phone_number ='" . $phone . "' " );
 			$response = true;
 		}
 
